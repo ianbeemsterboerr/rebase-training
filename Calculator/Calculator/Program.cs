@@ -31,8 +31,8 @@ namespace Calculator
                     result = RunAdd(operand1, operand2);
                     break;
 
-                case Operator.Subtract:
-                    result = RunSubtract(operand1, operand2);
+                case Operator.Multiply:
+                    result = RunMultiply(operand1, operand2);
                     break;
 
                 default:
@@ -52,9 +52,9 @@ namespace Calculator
         }
 
         [Pure]
-        private static decimal RunSubtract(decimal operand1, decimal operand2)
+        private static decimal RunMultiply(decimal operand1, decimal operand2)
         {
-            return operand1 - operand2;
+            return operand1 * operand2;
         }
 
         [Pure]
