@@ -21,7 +21,8 @@ $ git checkout --track origin/rebase/feature/multiply
 
 **Note:** If something went wrong, I recommend that you delete the whole directory and re-clone the repository before you try again.
 
-## Rebase (without Squash) - in Sourcetree
+## Rebase (without Squash)
+### Sourcetree
 
 1. Open the "Log / History" tab
 1. Checkout **source branch** (`rebase/feature/multiply`)
@@ -29,7 +30,28 @@ $ git checkout --track origin/rebase/feature/multiply
 1. Resolve conflict via the "File Status" tab (Right-click on `Program.cs` and chose "Resolve Conflict")
 1. In the menu choose "Action" -> "Continue Rebase"
 
-## Rebase Interactively (with Squash) - in Sourcetree
+### CLI
+
+1. Checkout **source branch** (`git checkout rebase/feature/multiply`)
+1. Rebase **_head_ of target branch** (`git rebase rebase/master`)
+1. You can optionally show the conflict in cli (`git diff`) enter `q` to exit
+1. Resolve conflict in your favorite text editor
+	- To see the beginning of the merge conflict in your file, search the file for the conflict marker <<<<<<<. When you open the file in your text editor, you'll see the changes from the HEAD or base branch after the line <<<<<<< HEAD. Next, you'll see =======, which divides your changes from the changes in the other branch, followed by >>>>>>> BRANCH-NAME. In this tutorial, one person wrote "`case Operator.Subtract:...`" in the base or HEAD branch and another person wrote "`case Operator.Multiply:...`" in the compare branch or `rebase/feature/multiply`. In some cases you want to keep both changes in other cases you want the replace one of the 2 changes. If you want to keep both changes keep an eye on the line before and after the conflict to see if you need to copy those to complete the conflict fix.
+	```
+		++<<<<<<< HEAD
+		 +                case Operator.Subtract:
+		 +                    result = RunSubtract(operand1, operand2);
+		++=======
+		+                 case Operator.Multiply:
+		+                     result = RunMultiply(operand1, operand2);
+		++>>>>>>> 5062359 (Feature: Implemented multiply operation)
+	```
+1. Add the fixed file (`git add .`)
+1. Continue the rebase (`git rebase --continue`)
+	- This will show a vim screen with the commit message, you can change the message if needed. You can quit and continue with `:q`. Look for basic vim explanation [here](https://coderwall.com/p/adv71w/basic-vim-commands-for-getting-started).
+
+## Rebase Interactively (with Squash) 
+### Sourcetree
 
 Interactive rebasing allows you to squash, delete and reorder commits before rebasing them onto a different branch.
 
@@ -41,6 +63,18 @@ My current workaround: First do a *regular* rebase, then do the *interactive* re
 1. Open the "Log / History" tab
 1. Right-click the **_parent_ of oldest commit** you want to rebase interactively (here `5c3d0ea`) and select "Rebase children of xxx interactively..."
 1. Modify the commits as desired (check out [this video](https://www.youtube.com/watch?v=mBCJCuU3p7I) for all the options)
+
+### CLI
+
+Interactive rebasing allows you to squash, delete and reorder commits before rebasing them onto a different branch.
+
+1. Checkout **source branch** (`git checkout rebase/feature/multiply`)
+1. Rebase interactively **_head_ of target branch** (`git rebase rebase/master -i`)
+	- This will show a vim screen with the options and commit messages
+	- You can change the action if needed in front of the commit. 
+		- For instance you can change an action _default `pick`_ to `f`: start edit mode in vim by pressing `i` remove `pick` from the line and enter `f`, next press `escape` to stop the edit mode in vim.
+	- You can quit and write to continue with `:wq`. 
+	- Look for basic vim explanation [here](https://coderwall.com/p/adv71w/basic-vim-commands-for-getting-started).
 
 ## Pushing Changes - in Sourcetree
 
