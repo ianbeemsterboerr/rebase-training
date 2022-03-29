@@ -1,6 +1,6 @@
+using JetBrains.Annotations;
 using System;
 using System.Globalization;
-using JetBrains.Annotations;
 
 namespace Calculator
 {
@@ -23,26 +23,25 @@ namespace Calculator
             Operator @operator = ReadOperator("Operator");
             decimal operand2 = ReadNumber("Number 2");
 
-            decimal result;
-
-            switch (@operator)
+            decimal? result = @operator switch
             {
-                case Operator.Add:
-                    result = RunAdd(operand1, operand2);
-                    break;
+                Operator.Add => RunAdd(operand1, operand2),
+                Operator.Multiply => RunMultiply(operand1, operand2),
+                _ => LogNonExistingOperator(@operator)
+            };
 
-                case Operator.Multiply:
-                    result = RunMultiply(operand1, operand2);
-                    break;
-
-                default:
-                    Console.WriteLine();
-                    Console.WriteLine($"ERROR: Operator '{@operator}' is not yet implemented.");
-                    return;
+            if (result.HasValue)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Result: " + result.Value.ToString(CultureInfo.InvariantCulture));
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Result: " + result.ToString(CultureInfo.InvariantCulture));
+            static decimal? LogNonExistingOperator(Operator @operator)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"ERROR: Operator '{@operator}' is not yet implemented.");
+                return null;
+            }
         }
 
         [Pure]
@@ -64,7 +63,7 @@ namespace Calculator
             {
                 Console.Write($"{prompt}: ");
                 string line = Console.ReadLine();
-                if (decimal.TryParse(line, NumberStyles.Any, CultureInfo.InvariantCulture, out var number))
+                if (decimal.TryParse(line, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal number))
                 {
                     return number;
                 }
@@ -81,19 +80,18 @@ namespace Calculator
                 Console.Write($"{prompt}: ");
                 string line = Console.ReadLine();
 
-                switch (line?.Trim())
+                Operator? @operator = line?.Trim() switch
                 {
-                    case "+":
-                        return Operator.Add;
+                    "+" => Operator.Add,
+                    "-" => Operator.Subtract,
+                    "*" => Operator.Multiply,
+                    "/" => Operator.Divide,
+                    _ => null
+                };
 
-                    case "-":
-                        return Operator.Subtract;
-
-                    case "*":
-                        return Operator.Multiply;
-
-                    case "/":
-                        return Operator.Divide;
+                if (@operator.HasValue)
+                {
+                    return @operator.Value;
                 }
 
                 Console.WriteLine($"ERROR: '{line}' is not a valid operation. Only + - * / are supported.");
