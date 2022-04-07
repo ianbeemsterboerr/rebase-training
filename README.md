@@ -1,25 +1,35 @@
 # Rebase Training Repo
 
-This Git repository gives you an example where you can train/experiment with Git's rebasing feature.
+This Git repository gives you examples on how you can train/experiment with Git's rebasing feature.
+The CLI part shows some additional options besides rebasing to train/experiment with keeping your git history clean.
 
-You can train two things here:
+You can train following things here:
 
-1. Rebase branch `rebase/feature/multiply` onto `rebase/master`.
-1. Rebase and squash branch `rebase/feature/multiply` onto `rebase/master` (using interactive rebasing).
+**Sourcetree:**
+1. Rebase
+1. Interactive rebase (squashing and other options)
+1. Commit amend
+1. Pushing rebased changes
 
-In both cases, there will (should) be a merge conflict that you need to resolve.
+**CLI:**
+1. Rebase
+1. Interactive rebase (squashing and other options)
+1. Rebase options like continue, skip and abort.
+1. Git reset
+1. Commit amend
+1. Pushing and pulling rebased changes
 
 ## Getting Started
 
-Follow these instructions to get the repository into a state where you can train:
+Follow these instructions to clone the repository into a clean state where you can train:
 
 ```
 $ cd <an-empty-dir>
-$ git clone -b rebase/master https://github.com/skrysmanski/rebase-training.git .
+$ git clone -b rebase/master https://github.com/LensArt/rebase-training.git .
 $ git checkout --track origin/rebase/feature/multiply
 ```
 
-**Note:** If something went wrong, I recommend that you delete the whole directory and re-clone the repository before you try again.
+**Note:** If something went wrong, you can delete the impacted branch and download it again from the remote or you can delete the whole directory and re-clone the repository to try again.
 
 ## Sourcetree
 
@@ -44,8 +54,17 @@ My current workaround: First do a *regular* rebase, then do the *interactive* re
 1. Right-click the **_parent_ of oldest commit** you want to rebase interactively (here `5c3d0ea`) and select "Rebase children of xxx interactively..."
 1. Modify the commits as desired (check out [this video](https://www.youtube.com/watch?v=mBCJCuU3p7I) for all the options)
 
-### Pushing Changes
+### Amend changes
+Sometimes you want to add a fix to your last commit, in this case you can amend the changes to your commit.
 
+1. Stage your changes in sourcetree 
+1. Select in the `commit options` dropdown (right upper corner above the commit message entry) `Amend latest commit`.
+1. It will show you a popup if you want to replace you commit message, if you select `Yes` it will copy the commit message from the last commit in the commit message entry box.
+1. You can edit this message if desired and commit your changes. 
+
+To push your changes see below how to `force push`
+
+### Pushing Changes
 Once you're done you (probably) need to push your changes back to `origin`. Normally Git doesn't allow you to push these kinds of changes.
 
 Instead you need to "force push" them; ideally by using `--force-with-lease` instead of `--force`. You can read about the differences between those two in [this article](https://developer.atlassian.com/blog/2015/04/force-with-lease/).
@@ -118,6 +137,14 @@ You can then revert the changes to this file or change the file and amend to the
 1. Reset `Program.cs` `git reset 20294f3 Calculator\Calculator\Program.cs`
 1. You will see `Program.cs` both as staged and unstaged file. The staged part reflects the reverted changes compared to what is in the commit and the unstaged part reflects the changes which were committed. If you would stage the unstaged changes unedited you will end up with an empty diff. If you would edit the file you would see those changes as diff if you stage them.
 
+### Amend changes
+Sometimes you want to add a fix to your last commit, in this case you can amend the changes to your commit.
+
+1. Use `git commit -a --amend` to stage and amend all your changes to your last commit.
+1. This will show a vim screen with the option to change the commit message.
+
+To push your changes see below how to `force push`
+
 ### Pushing Changes
 
 Once you're done you (probably) need to push your changes back to `origin`. Normally Git doesn't allow you to push these kinds of changes.
@@ -132,17 +159,22 @@ To pull changes which were force pushed by someone else you can use `git pull --
 ### Summary
 A quick summary of the git commands and what they do:
 
+_Git rebase_
 - `git rebase [branch_or_commit]` rebase the current branch on the branch in the command.
 - `git rebase [branch_or_commit] -i` interactively rebase the current branch on the branch in the command.
 - `git rebase --continue` commit fixes on current commit and continue to the next commit on the branch which is being rebased.
 - `git rebase --skip` drops the commit from the branch which is being rebased.
 - `git rebase --abort` stop an ongoing rebase.
 
+_Git reset_
 - `git reset [branch_or_commit]` undo commits and point the HEAD and branch ref to the specified branch/commit.
 - `git reset [branch_or_commit] --hard` undo commits and point the HEAD and branch ref to the specified branch/commit and clear all staged changes.
 - `git reset [branch_or_commit] [file_path(s)]` undo changes to a specific file and leave the rest of the commit intact.
 
+_Commit amend_
+- `git commit -a --amend` stage and amend (add) all files to the previous commit.
 
+_Pushing and pulling changes_
 - `git push --force-with-lease` force push with lease (check if remote has no new changes)
 - `git push -f` force push
 - `git pull --rebase` pull rebased changes from remote
@@ -151,8 +183,6 @@ _possible other helpful commands_
 - `git log` view commit history of the current branch.
 - `git status` check local repo status and show modified files.
 - `git diff` shows diff of what is changed but not staged.
-
-- `git commit -a --amend` stage and amend (add) all files to the previous commit.
 - `git commit -am ""` stage and commit all files with specified commit message.
 
 ## Additional resources
